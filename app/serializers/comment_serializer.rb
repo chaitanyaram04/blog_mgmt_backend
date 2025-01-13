@@ -1,7 +1,7 @@
 class CommentSerializer < ActiveModel::Serializer
-  attributes :id, :content, :updated_at, :user_name, :user_id, :likes_count
+  attributes :id, :content, :updated_at, :user_name, :user_id, :likes
 
-  def likes_count
+  def likes
     object.likes.count
   end
   def user_id

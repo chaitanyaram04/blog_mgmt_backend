@@ -13,32 +13,42 @@ class LikesController < ApplicationController
         end
     end
     def create
-        likeable = find_likeable
-        if likeable.nil?
+        ActiveRecord::Base.transaction do
+          likeable = find_likeable
+          if likeable.nil?
             render json: { errors: "Check Again" }, status: :not_found
-        else
-            @like = likeable.likes.new(user: @current_user)
+          else
+            @like = likeable.likes.new(user: get_current_user)
             if @like.save
-              render json:{ likes: likeable.likes.count, like_id: @like.id }, status: :created
+              render json: { likes: likeable.likes.count, like_id: @like.id }, status: :created
             else
-              render json: { errors: @like.errors.full_messages }, status: :unprocessable_entity
+              raise ActiveRecord::Rollback
             end
+          end
         end
-    end
+      rescue => e
+        render json: { errors: e.message }, status: :unprocessable_entity
+      end
     def destroy
-        likeable = find_likeable
-        like = Like.find_by(id: params[:id])
-        user = @current_user
-        if like.nil?
+        ActiveRecord::Base.transaction do
+          likeable = find_likeable
+          like = Like.find_by(id: params[:id])
+          user = get_current_user
+          if like.nil?
             render json: { errors: "Like not found" }, status: :not_found
-        elsif like.user != user
-
+          elsif like.user != user
             render json: { errors: "Unauthorized" }, status: :unauthorized
-        else
-            like.destroy
-            render json: {likes: likeable.likes.count }, status: :ok
+          else
+            if like.destroy
+              render json: { likes: likeable.likes.count }, status: :ok
+            else
+              raise ActiveRecord::Rollback
+            end
+          end
         end
-    end
+      rescue => e
+        render json: { errors: e.message }, status: :unprocessable_entity
+      end
 
     private
     

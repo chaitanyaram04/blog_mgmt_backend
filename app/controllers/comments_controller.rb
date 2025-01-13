@@ -1,62 +1,58 @@
 class CommentsController < ApplicationController
     include GetUser
-
+  
     def create
-        @blog = Blog.find(comm_params[:blog_id])
+      ActiveRecord::Base.transaction do
+        @blog = Blog.find_by(id: comm_params[:blog_id])
         if @blog
-            @comment = @blog.comments.new(content: comm_params[:content])
-            @comment.user = @current_user
-
-            if @comment.save
-                render json: @comment, status: :created
-            else 
-                render json: { errors: @comment.errors.full_messages}, status: :unprocessable_entity
-            end 
-        else 
-            render json: {erroes: "No blog"}, status: :unprocessable_entity
+          @comment = @blog.comments.new(content: comm_params[:content])
+          @comment.user = get_current_user
+  
+          if @comment.save
+            render json: @comment, status: :created
+          else
+            raise ActiveRecord::Rollback
+          end
+        else
+          render json: { errors: "No blog found" }, status: :unprocessable_entity
         end
+      end
+    rescue => e
+      render json: { errors: e.message }, status: :unprocessable_entity
     end
-
-
+  
     def index
-        @blog = Blog.find(params[:blog_id])
-        if @blog
+      @blog = Blog.find_by(id: params[:blog_id])
+      if @blog
         offset = params[:offset].to_i || 0
         limit = params[:limit].to_i || 5
         @comments = @blog.comments.offset(offset).limit(limit)
         render json: @comments, status: :ok
-        else
+      else
         render json: { errors: "No blog found" }, status: :unprocessable_entity
-        end
+      end
     end
-      
+  
     def update
-        @comment = Comment.find(params[:id])
-        if @comment.user == @current_user
-          if @comment.update(content: comm_params[:content])
+      ActiveRecord::Base.transaction do
+        @comment = Comment.find_by(id: params[:id])
+        if @comment
+          if @comment.update(comm_params)
             render json: @comment, status: :ok
           else
-            render json: { errors: @comment.errors.full_messages }, status: :unprocessable_entity
+            raise ActiveRecord::Rollback
           end
         else
-          render json: { errors: "Unauthorized" }, status: :unauthorized
+          render json: { errors: "Comment not found" }, status: :not_found
         end
       end
-    
-
-    def destroy
-        @blog = Blog.find(comm_params[:blog_id])
-        @comment = @blog.comments.find_by(id: params[:id])
-        if @comment && (@comment.user_id == @current_user.id ||@current_user.id == @blog.user_id)
-                @comment.destroy
-                render json: { message: "Comment successfully deleted"}, status: :ok
-        else 
-            render json: {message:"Unable to delete the comment"}, status: :unprocessable_entity
-        end
+    rescue => e
+      render json: { errors: e.message }, status: :unprocessable_entity
     end
-
+  
     private
+  
     def comm_params
-        params.permit(:content,:blog_id,:id, :offset, :limit)
+      params.require(:comment).permit(:content, :blog_id)
     end
-end
+  end
