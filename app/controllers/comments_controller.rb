@@ -5,7 +5,7 @@ class CommentsController < ApplicationController
         @blog = Blog.find(comm_params[:blog_id])
         if @blog
             @comment = @blog.comments.new(content: comm_params[:content])
-            @comment.user = get_current_user
+            @comment.user = @current_user
 
             if @comment.save
                 render json: @comment, status: :created
@@ -32,7 +32,7 @@ class CommentsController < ApplicationController
       
     def update
         @comment = Comment.find(params[:id])
-        if @comment.user == get_current_user
+        if @comment.user == @current_user
           if @comment.update(content: comm_params[:content])
             render json: @comment, status: :ok
           else
@@ -47,7 +47,7 @@ class CommentsController < ApplicationController
     def destroy
         @blog = Blog.find(comm_params[:blog_id])
         @comment = @blog.comments.find_by(id: params[:id])
-        if @comment && (@comment.user_id == get_current_user.id ||get_current_user.id == @blog.user_id)
+        if @comment && (@comment.user_id == @current_user.id ||@current_user.id == @blog.user_id)
                 @comment.destroy
                 render json: { message: "Comment successfully deleted"}, status: :ok
         else 

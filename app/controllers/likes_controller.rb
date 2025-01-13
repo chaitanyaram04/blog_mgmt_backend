@@ -17,7 +17,7 @@ class LikesController < ApplicationController
         if likeable.nil?
             render json: { errors: "Check Again" }, status: :not_found
         else
-            @like = likeable.likes.new(user: get_current_user)
+            @like = likeable.likes.new(user: @current_user)
             if @like.save
               render json:{ likes: likeable.likes.count, like_id: @like.id }, status: :created
             else
@@ -28,7 +28,7 @@ class LikesController < ApplicationController
     def destroy
         likeable = find_likeable
         like = Like.find_by(id: params[:id])
-        user = get_current_user
+        user = @current_user
         if like.nil?
             render json: { errors: "Like not found" }, status: :not_found
         elsif like.user != user
