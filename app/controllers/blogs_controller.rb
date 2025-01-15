@@ -101,8 +101,10 @@ class BlogsController < ApplicationController
 
     def getAuthorBlogs
       author_id = params[:id]
+      @user = User.find(author_id)
       Rails.logger.info("author_id: #{author_id}")
-      @blogs = Blog.where(user_id: author_id, status: 'published')
+      @blogs = @user.blogs.published.all
+      # @blogs = Blog.blogs.published.where(user_id: author_id)
       if @blogs.present?
       render json: @blogs
       else

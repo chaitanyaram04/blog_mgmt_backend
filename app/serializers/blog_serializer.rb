@@ -1,5 +1,5 @@
 class BlogSerializer < ActiveModel::Serializer
-  attributes :id, :title, :description, :status, :updated_at, :user_name, :user_id, :is_deleted, :user_liked, :likes_count, :comments_count
+  attributes :id, :title, :description, :status, :updated_at, :user_name, :user_id, :is_deleted, :user_liked, :likes_count, :comments_count, :created_at
 
   # has_many :comments, serializer: CommentSerializer
 
