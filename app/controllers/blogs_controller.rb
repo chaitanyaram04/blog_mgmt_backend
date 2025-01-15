@@ -38,7 +38,7 @@ class BlogsController < ApplicationController
       if @blog
         render json: @blog
       else
-        render json: { error: 'Blog not found' }, status: :not_found
+        render json: { error: 'Blog not found e' }, status: :not_found
       end
     end
   
@@ -86,7 +86,30 @@ class BlogsController < ApplicationController
         render json: { error: e.message }, status: :unprocessable_entity
       end
     end
-  
+    
+
+    def search
+      query = blog_params[:query]
+      Rails.logger.info("query: #{query}")
+      @blogs = Blog.published.search_by_title(query)
+      if @blogs.present?
+        render json: @blogs
+      else
+        render json: { error: "No blogs found for this query" }, status: :not_found
+      end
+    end
+
+    def getAuthorBlogs
+      author_id = params[:id]
+      Rails.logger.info("author_id: #{author_id}")
+      @blogs = Blog.where(user_id: author_id, status: 'published')
+      if @blogs.present?
+      render json: @blogs
+      else
+      render json: { error: "No published blogs found for this author" }, status: :not_found
+      end
+    end
+    
     def create
       user = @current_user
       if user.nil?
@@ -123,6 +146,6 @@ class BlogsController < ApplicationController
     private
   
     def blog_params
-      params.require(:blog).permit(:title, :description, :status, :is_deleted)
+      params.require(:blog).permit(:title, :description, :status, :is_deleted, :user_id, :query)
     end
   end

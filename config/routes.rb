@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post 'signin', to: 'authentication#signin'
   post 'signout', to: 'authentication#signout'
 
+  post 'blogs/search', to: 'blogs#search'
   get 'myblogs/draft', to: 'blogs#draft'
   get 'myblogs/archive', to: 'blogs#archive'
   get 'myblogs', to: 'blogs#shows'
@@ -22,10 +23,12 @@ Rails.application.routes.draw do
   post 'blogs/:id', to:'blogs#update'
   get 'blogs/:id/comments', to:'blogs#comment'
   get 'blogs/like/count', to: 'likes#count'
+  get 'blogs/user/:id', to: 'blogs#getAuthorBlogs'
   post 'likes', to: 'likes#create'
   post 'likes/:id', to: 'likes#destroy'
+ 
 
-
+  get 'comments/:id', to: 'comments#show'
   post 'comments/all', to: 'comments#index'
   post 'comments', to: 'comments#create'
   put 'comments/:id', to: 'comments#update'

@@ -32,6 +32,17 @@ class CommentsController < ApplicationController
         render json: { errors: "No blog found" }, status: :unprocessable_entity
       end
     end
+
+
+    def show
+      @user = User.find_by(id: params[:id])
+      if @user
+        @comments = @user.comments
+        render json: @comments, status: :ok
+      else
+        render json: { errors: "No user found" }, status: :unprocessable_entity
+      end
+    end
   
     def update
       ActiveRecord::Base.transaction do
@@ -50,6 +61,17 @@ class CommentsController < ApplicationController
       render json: { errors: e.message }, status: :unprocessable_entity
     end
   
+
+    def destroy
+        @blog = Blog.find(comm_params[:blog_id])
+        @comment = @blog.comments.find_by(id: params[:id])
+        if @comment && (@comment.user_id == @current_user.id ||@current_user.id == @blog.user_id)
+                @comment.destroy
+                render json: { message: "Comment successfully deleted"}, status: :ok
+        else 
+            render json: {message:"Unable to delete the comment"}, status: :unprocessable_entity
+        end
+    end
     private
   
     def comm_params

@@ -10,6 +10,8 @@ class Blog < ApplicationRecord
   scope :deleted, -> { where(is_deleted: true) }
   scope :drafted, -> { where(status: 'drafted', is_deleted:false) }
   scope :published, -> { where(status: 'published', is_deleted: false) }
+  scope :search_by_title, ->(query) { where('title LIKE ?', "%#{query}%") }
+
 end
 
 
