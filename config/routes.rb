@@ -7,7 +7,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "blogs#index"
-  
+
+  resources :admin, only: [:edit, :update, :destroy]
+
   post 'signup', to: 'authentication#signup'
   post 'signin', to: 'authentication#signin'
   post 'signout', to: 'authentication#signout'
@@ -27,6 +29,7 @@ Rails.application.routes.draw do
   post 'likes', to: 'likes#create'
   post 'likes/:id', to: 'likes#destroy'
  
+  get 'home/admin', to: 'admin#admin'
 
   get 'comments/:id', to: 'comments#show'
   post 'comments/all', to: 'comments#index'

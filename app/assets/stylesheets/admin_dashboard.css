@@ -1,0 +1,60 @@
+/* Admin Dashboard - Scoped to .admin-dashboard */
+body.admin-dashboard {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  /* Table Styling */
+  .admin-dashboard table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .admin-dashboard thead {
+    background-color: #007BFF;
+    color: white;
+  }
+  
+  .admin-dashboard th, .admin-dashboard td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-dashboard tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .admin-dashboard tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .admin-dashboard td a, .admin-dashboard td button {
+    margin: 5px;
+  }
+  
+  /* Pagination Styling (Optional) */
+  .admin-dashboard .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .admin-dashboard .pagination a {
+    color: #007BFF;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #007BFF;
+    margin: 0 5px;
+    border-radius: 4px;
+  }
+  
+  .admin-dashboard .pagination a:hover {
+    background-color: #007BFF;
+    color: white;
+  }
+  

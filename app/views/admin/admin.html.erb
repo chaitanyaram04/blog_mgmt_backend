@@ -1,0 +1,27 @@
+<body class="admin-dashboard">
+  <!-- Your table content goes here -->
+  <h1>Admin Dashboard</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.user_name %></td>
+          <td><%= user.email %></td>
+          <td>
+            <%= link_to 'Edit', edit_admin_path(user) %> |
+            <%= link_to 'Delete', admin_path(user), method: :delete, data: { confirm: 'Are you sure?' } %>
+
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</body>
