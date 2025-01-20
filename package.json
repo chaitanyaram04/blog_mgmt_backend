@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@mui/x-date-pickers": "^7.23.6",
+    "tailwindcss": "^3.4.17"
+  }
+}

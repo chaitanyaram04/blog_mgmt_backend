@@ -30,6 +30,8 @@ Rails.application.routes.draw do
   post 'likes/:id', to: 'likes#destroy'
  
   get 'home/admin', to: 'admin#admin'
+  get 'home/admin/login', to: 'admin#login'
+  post 'home/admin/validate', to: 'admin#validate'
 
   get 'comments/:id', to: 'comments#show'
   post 'comments/all', to: 'comments#index'
