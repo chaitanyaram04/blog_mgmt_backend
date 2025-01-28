@@ -33,6 +33,9 @@ Rails.application.routes.draw do
   get 'home/admin/login', to: 'admin#login'
   post 'home/admin/validate', to: 'admin#validate'
 
+  post 'myprofile/:id', to: 'admin#updates'
+  get 'user', to: 'admin#user'
+
   get 'comments/:id', to: 'comments#show'
   post 'comments/all', to: 'comments#index'
   post 'comments', to: 'comments#create'

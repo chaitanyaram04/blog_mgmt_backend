@@ -9,8 +9,11 @@ class LikeSerializer < ActiveModel::Serializer
   end
 
   def all_user_names
+    return [] unless object.likeable && object.likeable.likes.present?
+  
     object.likeable.likes.includes(:user).map { |like| like.user.user_name }
   end
+  
 
   belongs_to :user
   belongs_to :likeable, polymorphic: true

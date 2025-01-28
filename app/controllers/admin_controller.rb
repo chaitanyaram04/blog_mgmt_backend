@@ -1,8 +1,9 @@
 class AdminController < ApplicationController
-    before_action :set_user, only: [:edit, :update, :destroy]
+    before_action :set_user, only: [:edit, :update, :destroy, :updates]
   
     def admin
       @users = User.all
+      render json: @users
     end
   
     def login 
@@ -19,6 +20,9 @@ class AdminController < ApplicationController
       end
     end
 
+
+
+    
     def edit
     end
   
@@ -38,6 +42,20 @@ class AdminController < ApplicationController
       end
     end
     
+    def updates
+      Rails.logger.debug "User: #{user_params.inspect}"
+    
+      if user_params[:password].present? || user_params[:password_confirmation].present?
+        if user_params[:password] != user_params[:password_confirmation]
+          redirect_to edit_admin_path(@user), alert: "Password and confirm password do not match" and return
+        end
+      end
+      if @user.update(user_params.except(:password_confirmation))
+        render json: @user
+      else
+        render json: { error: 'Unauthorized' }, status: :unprocessable_entity
+      end
+    end
     
   
     def destroy
@@ -52,7 +70,7 @@ class AdminController < ApplicationController
     end
   
     def user_params
-      params.require(:user).permit(:user_name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:user_name, :email, :password, :password_confirmation, :id)
     end
   end
   
